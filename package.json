@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/lanpong/script#readme",
   "dependencies": {
-    "axios": "^0.25.0"
+    "axios": "^0.25.0",
+    "qs": "^6.10.3"
   }
 }
