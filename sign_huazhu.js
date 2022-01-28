@@ -1,7 +1,7 @@
 const qs = require("qs");
 
 let jsname = "华住会任务";
-const $ = new Env(jsname);
+const $ = new Env("华住会任务");
 
 const notify = $.isNode() ? require("./sendNotify") : "";
 const notifyFlag = 1; //0为关闭通知，1为打开通知,默认为1
