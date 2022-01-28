@@ -1,3 +1,7 @@
+/*
+[Script]
+cron "30 7 * * *" https://raw.githubusercontent.com/lanpong/script/main/sign_huazhu.js, tag=华住会任务
+*/
 const qs = require("qs");
 
 let jsname = "华住会任务";
