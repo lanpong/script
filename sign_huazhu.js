@@ -19,8 +19,11 @@ let notifyStr = "";
 let today = new Date();
 
 let data = qs.stringify({
-  state: today.getMonth() + 1,
-  day: today.getDate(),
+  state: 1,
+  day:
+    today.getDate().toString().length == 1
+      ? "0" + today.getDate().toString()
+      : today.getDate().toString(),
 });
 
 !(async () => {
