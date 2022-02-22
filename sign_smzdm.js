@@ -105,7 +105,7 @@ function signApp(cookie) {
 function getBody(cookie) {
   const t = new Date().getTime();
   const token = getToken(cookie);
-  const sign = getAppSign(t);
+  const sign = getAppSign(t, cookie);
   return (
     "touchstone_event=&v=10.0&sign=" +
     sign +
@@ -117,12 +117,12 @@ function getBody(cookie) {
   );
 }
 
-function getAppSign(t) {
+function getAppSign(t, cookie) {
   const sign =
     "f=android&sk=1&time=" +
     t +
     "&token=" +
-    getToken() +
+    getToken(cookie) +
     "&v=10.0&weixin=0&key=apr1$AwP!wRRT$gJ/q.X24poeBInlUJC";
   return $.CryptoJS.MD5(sign).toString().toUpperCase();
 }
@@ -654,8 +654,8 @@ function WebGetCurrentInfo(smzdmCookie) {
             content += "签到! ";
             await SignIn(smzdmCookie);
             await magicJS.sleep(2000);
-            await signApp(smzdmCookie);
           }
+          await signApp(smzdmCookie);
 
           // 每日抽奖
           let activeId = await GetLotteryActiveId(smzdmCookie);
