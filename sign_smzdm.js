@@ -31,6 +31,9 @@ let clickFavArticleMaxTimes = 7; // 好文收藏次数
 
 let magicJS = MagicJS(scriptName, "INFO");
 const $ = new Env("什么值得买自动签到");
+
+$.CryptoJS = $.isNode() ? require("crypto-js") : CryptoJS;
+
 magicJS.unifiedPushUrl =
   magicJS.read("smzdm_unified_push_url") ||
   magicJS.read("magicjs_unified_push_url");
@@ -66,14 +69,67 @@ function SignIn(cookie) {
     };
     magicJS.get(options, (err, resp, data) => {
       if (err) {
-        magicJS.logWarning(`每日签到，请求异常: ${err}`);
+        magicJS.logWarning(`每日web签到，请求异常: ${err}`);
         resolve("");
       } else {
-        magicJS.log(`每日签到成功`);
+        magicJS.log(`每日web签到成功`);
         resolve("");
       }
     });
   });
+}
+
+function signApp(cookie) {
+  const body = getBody(cookie);
+  return new Promise((resolve) => {
+    const options = {
+      url: "https://user-api.smzdm.com/checkin",
+      body,
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Cookie: cookie,
+      },
+    };
+    magicJS.post(options, (err, resp, data) => {
+      if (err) {
+        magicJS.logWarning(`每日app签到，请求异常: ${err}`);
+        resolve("");
+      } else {
+        magicJS.log(`每日app签到成功`);
+        resolve("");
+      }
+    });
+  });
+}
+
+function getBody(cookie) {
+  const t = new Date().getTime();
+  const token = getToken(cookie);
+  const sign = getAppSign(t);
+  return (
+    "touchstone_event=&v=10.0&sign=" +
+    sign +
+    "&weixin=0&time=" +
+    t +
+    "&sk=1&token=" +
+    token +
+    "&f=android&captcha="
+  );
+}
+
+function getAppSign(t) {
+  const sign =
+    "f=android&sk=1&time=" +
+    t +
+    "&token=" +
+    getToken() +
+    "&v=10.0&weixin=0&key=apr1$AwP!wRRT$gJ/q.X24poeBInlUJC";
+  return $.CryptoJS.MD5(sign).toString().toUpperCase();
+}
+
+function getToken(cookie) {
+  const [, token] = cookie.match(/sess=(.*?);/);
+  return token;
 }
 
 // 获取点击去购买和点值的链接
@@ -597,6 +653,8 @@ function WebGetCurrentInfo(smzdmCookie) {
           if (!beforeHasCheckin) {
             content += "签到! ";
             await SignIn(smzdmCookie);
+            await magicJS.sleep(2000);
+            await signApp(smzdmCookie);
           }
 
           // 每日抽奖
