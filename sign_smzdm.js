@@ -600,9 +600,7 @@ function WebGetCurrentInfo(smzdmCookie) {
           if (!beforeHasCheckin) {
             content += "签到! ";
             await SignIn(smzdmCookie);
-            await magicJS.sleep(2000);
           }
-          await signApp(smzdmCookie);
 
           // 每日抽奖
           let activeId = await GetLotteryActiveId(smzdmCookie);
