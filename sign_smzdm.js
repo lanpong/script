@@ -79,59 +79,6 @@ function SignIn(cookie) {
   });
 }
 
-function signApp(cookie) {
-  const body = getBody(cookie);
-  return new Promise((resolve) => {
-    const options = {
-      url: "https://user-api.smzdm.com/checkin",
-      body,
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Cookie: cookie,
-      },
-    };
-    magicJS.post(options, (err, resp, data) => {
-      if (err) {
-        magicJS.logWarning(`每日app签到，请求异常: ${err}`);
-        resolve("");
-      } else {
-        magicJS.log(`每日app签到成功`);
-        resolve("");
-      }
-    });
-  });
-}
-
-function getBody(cookie) {
-  const t = new Date().getTime();
-  const token = getToken(cookie);
-  const sign = getAppSign(t, cookie);
-  return (
-    "touchstone_event=&v=10.0&sign=" +
-    sign +
-    "&weixin=0&time=" +
-    t +
-    "&sk=1&token=" +
-    token +
-    "&f=android&captcha="
-  );
-}
-
-function getAppSign(t, cookie) {
-  const sign =
-    "f=android&sk=1&time=" +
-    t +
-    "&token=" +
-    getToken(cookie) +
-    "&v=10.0&weixin=0&key=apr1$AwP!wRRT$gJ/q.X24poeBInlUJC";
-  return $.CryptoJS.MD5(sign).toString().toUpperCase();
-}
-
-function getToken(cookie) {
-  const [, token] = cookie.match(/sess=(.*?);/);
-  return token;
-}
-
 // 获取点击去购买和点值的链接
 function GetProductList() {
   return new Promise((resolve, reject) => {
