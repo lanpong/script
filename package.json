@@ -21,6 +21,7 @@
   "homepage": "https://github.com/lanpong/script#readme",
   "dependencies": {
     "axios": "^0.25.0",
+    "dayjs": "^1.11.2",
     "qs": "^6.10.3"
   }
 }

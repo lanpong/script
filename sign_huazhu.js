@@ -3,6 +3,7 @@
 cron "30 7 * * *" https://raw.githubusercontent.com/lanpong/script/main/sign_huazhu.js, tag=华住会任务
 */
 const qs = require("qs");
+const dayjs = require("dayjs");
 
 let jsname = "华住会任务";
 const $ = new Env("华住会任务");
@@ -16,14 +17,11 @@ let hzHeaderArr = [];
 let hzHeader;
 let notifyStr = "";
 
-let today = new Date();
+let today = dayjs();
 
 let data = qs.stringify({
   state: 1,
-  day:
-    today.getDate().toString().length == 1
-      ? "0" + today.getDate().toString()
-      : today.getDate().toString(),
+  day: today.format("DD"),
 });
 
 !(async () => {
@@ -45,6 +43,9 @@ let data = qs.stringify({
     $.index = k + 1;
     console.log(`\n开始 账户 ${$.index}`);
     await sign();
+    if (isDays()) {
+      await taskProcessUpdate();
+    }
   }
 
   await showMsg();
@@ -103,7 +104,7 @@ function taskProcessUpdate() {
         taskId: "RCDJFQD",
         operateType: 5,
         modelType: "model-qd",
-        mamId: 275779322,
+        mamId: 278492141,
       }),
     };
 
@@ -111,6 +112,7 @@ function taskProcessUpdate() {
       try {
         let result = JSON.parse(data);
         // if ()
+        notifyStr += `\n 进度任务完成，账号 ${$.index} 获得积分`;
       } catch (e) {
         $.logErr(e, resp);
       } finally {
@@ -118,6 +120,13 @@ function taskProcessUpdate() {
       }
     });
   });
+}
+
+function isDays() {
+  let today = dayjs().format("DD");
+  let endMonthDay = dayjs().endOf("month").format("DD");
+  let arr = ["07", "15", endMonthDay];
+  return arr.includes(today);
 }
 
 // prettier-ignore
