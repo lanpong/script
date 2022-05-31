@@ -13,8 +13,8 @@ const notifyFlag = 1; //0为关闭通知，1为打开通知,默认为1
 
 let baseUrl = "https://hweb-mbf.huazhu.com";
 
-let hzHeaderArr = [];
-let hzHeader;
+let hzCookieArr = [];
+let hzCookie;
 let notifyStr = "";
 
 let today = dayjs();
@@ -25,21 +25,21 @@ let data = qs.stringify({
 });
 
 !(async () => {
-  if (process.env.hzHeader && process.env.hzHeader.indexOf("#") > -1) {
-    hzHeaderArr = process.env.hzHeader.split("#");
+  if (process.env.hzCookie && process.env.hzCookie.indexOf("#") > -1) {
+    hzCookieArr = process.env.hzCookie.split("#");
     console.log(`您选择的是用"#"隔开\n`);
   } else {
-    hzHeaders = [process.env.hzHeader];
+    hzCookies = [process.env.hzCookie];
   }
-  Object.keys(hzHeaders).forEach((item) => {
-    if (hzHeaders[item]) {
-      hzHeaderArr.push(hzHeaders[item]);
+  Object.keys(hzCookies).forEach((item) => {
+    if (hzCookies[item]) {
+      hzCookieArr.push(hzCookies[item]);
     }
   });
 
-  console.log(`共${hzHeaderArr.length}个账号`);
-  for (let k = 0; k < hzHeaderArr.length; k++) {
-    hzHeader = hzHeaderArr[k];
+  console.log(`共${hzCookieArr.length}个账号`);
+  for (let k = 0; k < hzCookieArr.length; k++) {
+    hzCookie = hzCookieArr[k];
     $.index = k + 1;
     console.log(`\n开始 账户 ${$.index}`);
     await sign();
@@ -72,9 +72,25 @@ async function showMsg() {
 // sign
 function sign() {
   return new Promise((resolve) => {
+    let headers = {
+      Host: "hweb-mbf.huazhu.com",
+      Accept: "application/json, text/plain, */*",
+      "Accept-Encoding": "gzip, deflate, br",
+      "Accept-Language": "zh-CN,zh-Hans;q=0.9",
+      "Content-Type": "application/x-www-form-urlencoded",
+      Origin: "https://campaign.huazhu.com",
+      "User-Agent":
+        "HUAZHU/ios/iPhone12,8/15.2/8.4.1/Mozilla/5.0 (iPhone; CPU iPhone OS 15_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+      "Client-Platform": "APP-IOS",
+      Referer: "https://campaign.huazhu.com/",
+      "User-Token": "",
+      "Content-Length": "14",
+      Cookie: hzCookie,
+      Connection: "keep-alive",
+    };
     let url = {
       url: `${baseUrl}/api/signIn`,
-      headers: JSON.parse(hzHeader),
+      headers: headers,
       body: data,
     };
 
@@ -97,9 +113,23 @@ function sign() {
 // process task
 function taskProcessUpdate() {
   return new Promise((resolve) => {
+    let headers = {
+      Host: "hweb-mbf.huazhu.com",
+      "Accept-Encoding": "gzip, deflate, br",
+      "Accept-Language": "zh-CN,zh-Hans;q=0.9",
+      Origin: "https://campaign.huazhu.com",
+      "User-Agent":
+        "HUAZHU/ios/iPhone12,8/15.4.1/8.6.3/Mozilla/5.0 (iPhone; CPU iPhone OS 15_4_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148",
+      "Client-Platform": "APP-IOS",
+      Referer: "https://campaign.huazhu.com/",
+      "User-Token": "null",
+      "Content-Length": "77",
+      Cookie: hzCookie,
+      Connection: "keep-alive",
+    };
     let options = {
       url: `${baseUrl}/api/taskProcessUpdate`,
-      headers: JSON.parse(hzHeader),
+      headers: headers,
       body: JSON.stringify({
         taskId: "RCDJFQD",
         operateType: 5,
